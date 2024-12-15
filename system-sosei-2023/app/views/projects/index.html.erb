@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project List Page</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous">
+<script>
+// 背景色を変更する関数
+function changeBackgroundColor(event, projectId) {
+  var color = event.target.value; // 選択された色を取得
+  var projectCard = document.getElementById('project-' + projectId); // 対象のプロジェクトカードを取得
+  projectCard.style.backgroundColor = color; // 背景色を設定
+
+  // 選択した色をローカルストレージに保存
+  localStorage.setItem('projectColor' + projectId, color);
+}
+
+// ローカルストレージから背景色を適用する関数
+function applySavedColors() {
+  var projects = document.querySelectorAll('[id^="project-"]');
+  projects.forEach((project) => {
+    var projectId = project.getAttribute('id').replace('project-', '');
+    var savedColor = localStorage.getItem('projectColor' + projectId);
+    if (savedColor) {
+      project.style.backgroundColor = savedColor; // 保存された背景色を適用
+    }
+  });
+}
+
+// Turbo Driveがページを読み込んだ後に背景色を適用
+document.addEventListener('turbo:load', applySavedColors);
+
+// 背景色を変更するボタンにイベントリスナーを設定
+document.querySelectorAll('[id^="project-"]').forEach((project) => {
+  var projectId = project.getAttribute('id').replace('project-', '');
+  var button = project.querySelector('.bg-green-500'); // 背景色を変更するボタンを取得
+  var colorPicker = document.getElementById('colorPicker-' + projectId); // 対応するカラーピッカーを取得
+
+  button.addEventListener('click', function() {
+    colorPicker.click(); // 対応するカラーピッカーのクリックイベントをトリガーする
+  });
+});
+</script>
+
+</head>
+<body>
+
+<!-- Right-side Button and Icon Container -->
+<div class="fixed top-0 right-0 p-4 flex items-center space-x-2 bg-white p-2 rounded-lg shadow-md">
+    <!-- HOME Button -->
+    <button class="text-white bg-red-500 hover:bg-red-600 focus:outline-none font-medium text-sm py-2 px-4 rounded items-center" onclick="location.href='/';">
+        <i class="fas fa-home mr-1"></i>
+        <span>HOME</span>
+    </button>
+    
+    <!-- Icon Container -->
+    <div class="relative w-10 h-10 overflow-hidden bg-gray-100 rounded-full shadow-sm" onclick="location.href='<%= user_path(@user) %>';">
+        <svg class="absolute w-12 h-12 text-gray-400 -left-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+        </svg>
+    </div>
+</div>
+
+<div class="container mx-auto px-4 py-4">
+  <h1 class="text-2xl font-bold text-center my-6">プロジェクト管理</h1>
+  
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+    <!-- 既存のプロジェクトリスト -->
+<% @projects.each_with_index do |project, index| %>
+  <div id="project-<%= index %>" class="relative bg-white rounded shadow p-4 h-64 flex flex-col justify-between">
+<div class="relative flex items-center justify-center w-full h-full bg-white rounded shadow p-4">
+  <div>
+    <h2 class="text-3xl font-bold text-gray-800 mb-2">
+      <%= link_to project.title, project_path(project), class: "text-blue-600 hover:text-blue-800" %>
+    </h2>
+    <p class="text-lg text-gray-600 mb-2"><%= project.content %></p>
+    <div class="text-sm text-gray-500"><%= project.created_at.strftime("%Y/%m/%d %H:%M") %></div>
+  </div>
+</div>
+
+
+
+    <div class="absolute top-0 right-0 p-2"> <!-- ここでボタンの位置を調整します -->
+      <button onclick="document.getElementById('colorPicker-<%= index %>').click();" class="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded">
+        背景色を変更
+      </button>
+      <input type="color" id="colorPicker-<%= index %>" class="hidden" onchange="changeBackgroundColor(event, <%= index %>)">
+    </div>
+    <div class="flex mt-4 items-center justify-between">
+      <!-- 編集と削除のボタンはここに残ります -->
+      <%= link_to "編集", edit_project_path(project), class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2" %>
+      <%= button_to "削除", project_path(project), method: :delete, data: { confirm: "削除してよろしいですか？" }, class: "bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" %>
+    </div>
+  </div>
+<% end %>
+
+    <%= link_to new_project_path, class: "text-gray-800 no-underline hover:text-blue-600" do %>
+      <div class="bg-white rounded shadow p-4 h-64 flex justify-center items-center border-2 border-dashed border-gray-300">
+        <div class="text-center">
+          <span class="block text-neutral-400 text-lg">新規プロジェクト</span>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+</body>
+</html>
+

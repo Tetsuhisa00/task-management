@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>新規登録</title>
+</head>
+<body class="bg-gray-100">
+
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full bg-white p-6 rounded-lg shadow-md">
+        <div>
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                アカウントを作成する
+            </h2>
+        </div>
+        <%= form_for @user, url: users_path, method: :post do |form| %>
+            <% if form.object.errors.any? %>
+                <div class="alert alert-danger">
+                    <% form.object.errors.full_messages.each do |message|  %>
+                        <div>
+                            <%= message %>
+                        </div>
+                    <% end  %>
+                </div>
+            <% end %>
+            <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+            <div class="rounded-md shadow-sm -space-y-px">
+                <div>
+                    <label for="user_name" class="sr-only">ユーザー名</label>
+                    <input id="user_name" name="user[user_name]" type="text" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="ユーザー名">
+                </div>
+                <div>
+                    <label for="email" class="sr-only">メールアドレス</label>
+                    <input id="email" name="user[email]" type="email" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="メールアドレス">
+                </div>
+                <div>
+                    <label for="password" class="sr-only">パスワード</label>
+                    <input id="password" name="user[password]" type="password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="パスワード">
+                </div>
+                <div>
+                    <label for="password_confirmation" class="sr-only">パスワード確認</label>
+                    <input id="password_confirmation" name="user[password_confirmation]" type="password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="パスワード確認">
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    登録する
+                </button>
+            </div>
+            
+            <div class="mt-6 text-center">
+                <p>アカウントをお持ちですか？<%= link_to 'ログイン', login_path, class: "text-indigo-600 hover:text-indigo-500" %></p>
+            </div>
+        <% end %>
+    </div>
+</div>
+
+</body>
+</html>

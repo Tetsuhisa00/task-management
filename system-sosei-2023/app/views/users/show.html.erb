@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title><%= @user.user_name %>のプロフィール</title>
+</head>
+<body class="bg-gray-100">
+    <!-- Back Button -->
+    <div class="absolute top-0 left-0 p-4">
+        <%= link_to '戻る', :back, class: "text-sm bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
+    </div>
+
+    <!-- Right-Side Button and Icon Container -->
+<div class="absolute top-0 right-0 p-4 flex items-center space-x-2">
+    <!-- HOME Button -->
+    <button class="text-white bg-red-500 hover:bg-red-600 focus:outline-none font-medium text-sm py-2 px-4 rounded" onclick="location.href='/';">
+        <i class="fas fa-home mr-1"></i>
+        <span>HOME</span>
+    </button>
+    
+    <!-- Project List Button -->
+    <button class="text-white bg-blue-500 hover:bg-blue-600 focus:outline-none font-medium text-sm py-2 px-4 rounded" onclick="location.href='/projects';">
+        <span>プロジェクト一覧</span>
+    </button>
+</div>
+
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full bg-white p-6 rounded-lg shadow-md">
+        <div>
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                <%= @user.user_name %>のプロフィール
+            </h2>
+        </div>
+        <div class="rounded-md shadow-sm -space-y-px">
+            <div class="px-3 py-2 border border-gray-300 text-gray-900 rounded-t-md sm:text-sm mb-4">
+                <strong>ユーザー名:</strong>
+                <%= @user.user_name %>
+            </div>
+            <div class="px-3 py-2 border border-gray-300 text-gray-900 sm:text-sm mb-4">
+                <strong>メールアドレス:</strong>
+                <%= @user.email %>
+            </div>
+            <div class="px-3 py-2 border border-gray-300 text-gray-900 rounded-b-md sm:text-sm mb-4">
+                <strong>パスワード:</strong>
+                [パスワードは表示されません]
+            </div>
+        </div>
+        
+        <div class="flex items-center justify-between mt-6">
+            <%= link_to '編集', edit_user_path(@user), class: "inline-block text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 py-2 px-4 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+            <%= button_to 'ログアウト', logout_path, method: :delete, class: "inline-block text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 py-2 px-4 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" %>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

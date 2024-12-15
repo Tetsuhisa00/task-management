@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>Project Management Application</title>
+    <style>
+        .gif-container {
+            display: flex;
+            align-items: center;
+        }
+        .gif-img {
+            width: 200%; /* GIF画像の幅を増やす */
+            max-width: 680px; /* 最大幅を設定 */
+            height: auto; /* 高さを自動調整 */
+        }
+    </style>
+</head>
+<body>
+   <div class="relative h-screen bg-indigo-900">
+    <%= image_tag '確認3.png', class: "absolute object-cover w-full h-full" %>
+    <div class="absolute inset-0 bg-black opacity-25"></div>
+    <header class="absolute top-0 right-0 z-20 p-4">
+        <a href="/users/signup" class="text-white text-lg px-4 py-2 leading-none border rounded border-white hover:border-transparent hover:text-indigo-900 hover:bg-white">新規登録</a>
+        <a href="/login" class="text-white text-lg ml-4 px-4 py-2 leading-none border rounded border-white hover:border-transparent hover:text-indigo-900 hover:bg-white">ログイン</a>
+    </header>
+    <div class="container relative z-10 flex items-center px-6 py-32 mx-auto md:px-12 xl:py-40">
+        <div class="relative z-10 flex flex-col items-start lg:w-full xl:w-full">
+            <span class="font-bold text-yellow-400 uppercase">Team 5</span>
+            <h1 class="mt-4 text-4xl font-bold leading-snug text-white sm:text-5xl lg:text-6xl xl:text-7xl">
+                タスクを落とさない、必ず完了。<br>
+                『監視君 light』で、プロジェクト管理の新しいスタンダードを。
+            </h1>
+            <a href="/users/signup" class="block px-6 py-4 mt-10 text-xl font-bold text-gray-800 uppercase bg-white rounded-lg hover:bg-gray-100 shadow-lg">
+                はじめる
+            </a>
+        </div>
+    </div>
+</div>
+
+    <div class="relative h-screen" style="background-color: #0f2f5c;">
+    <header class="absolute top-0 left-0 right-0 z-20"></header>
+    <div class="container relative z-10 flex items-center justify-end px-6 py-32 mx-auto md:px-12 xl:py-40">
+        <div class="flex justify-between w-full">
+                <!-- GIF動画の挿入 -->
+                <div class="gif-container w-1/2">
+                    <%= image_tag "movie.gif", alt: "movie", class: "gif-img" %>
+                </div>
+                <!-- テキストの配置 -->
+                <div class="relative z-10 flex flex-col items-center lg:w-3/5 xl:w-2/5 w-1/2">
+                    <h1 class="mt-4 text-6xl font-bold leading-tight text-white sm:text-7xl w-full">
+                        WBS図を採用！プロジェクトの進行が図でわかりやすく！
+                    </h1>
+                <p class="text-base text-white mt-2 max-w-md w-full">「監視くんlight」ではWBS(work down structure)という形式でタスクを登録することが可能。各タスクのインプット、アウトプットが明確になり、次のタスクを始めるにあたって必要になるタスクも全て図で確認できる！</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="relative h-screen" style="background-color: #aeb2c7;">
+    <header class="absolute top-0 left-0 right-0 z-20"></header>
+    <div class="container relative z-10 flex items-center justify-start px-6 py-32 mx-auto md:px-12 xl:py-40">
+        <div class="flex justify-between w-full">
+            <!-- テキストの配置 -->
+            <div class="relative z-10 flex flex-col items-center lg:w-3/5 xl:w-2/5 w-1/2">
+                <h1 class="mt-4 text-6xl font-bold leading-tight text-white sm:text-7xl">
+                    期限の近いタスクがあれば警告アニメーションでお知らせ！
+                </h1>
+                <p class="text-base text-white mt-2 max-w-md w-full text-center">タスクは最長７日間まで設定可能。期限が近付くと音声と共に期限が近付いていることを警告するアニメーションでタスクの進行を促します。</p>
+            </div>
+            <!-- GIF動画の挿入 -->
+                <div class="gif-container w-1/2">
+                    <%= image_tag "movie2.gif", alt: "movie2", class: "gif-img" %>
+                </div>
+        </div>
+    </div>
+</div>
+
+    <div class="relative h-screen" style="background-color: #1f527f;">
+    <header class="absolute top-0 left-0 right-0 z-20"></header>
+    <div class="container relative z-10 flex items-center justify-start px-6 py-32 mx-auto md:px-12 xl:py-40">
+        <div class="flex justify-between w-full">
+            <!-- GIF動画の挿入 -->
+            <div class="gif-container w-1/2">
+                <%= image_tag "movie3.gif", alt: "movie3", class: "gif-img" %>
+            </div>
+            <!-- テキストの配置 -->
+            <div class="relative z-10 flex flex-col items-center lg:w-3/5 xl:w-2/5 w-1/2">
+                <h1 class="mt-4 text-6xl font-bold leading-tight text-white sm:text-7xl w-full">
+                    必要な能力の「見える化」機能でタスクの振り分けがカンタンに！
+                </h1>
+                <p class="text-base text-white mt-2 max-w-md w-full">タスクに必要な能力を登録して、効率的なタスク分担を実現！タスクごとに求められるスキルを明示することで、適切なタスク割り当てを可能にし、ミスマッチを最小限に抑えます！</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

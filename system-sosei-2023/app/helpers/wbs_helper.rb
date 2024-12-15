@@ -1,0 +1,2 @@
+module WbsHelper
+end

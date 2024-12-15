@@ -1,0 +1,2 @@
+class TagTable < ApplicationRecord
+end

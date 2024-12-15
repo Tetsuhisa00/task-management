@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  user: one
+  description: MyText
+  status: one
+  priority: one
+  due_date: 2023-10-31
+  tag: one
+  shape: one
+
+two:
+  title: MyString
+  user: two
+  description: MyText
+  status: two
+  priority: two
+  due_date: 2023-10-31
+  tag: two
+  shape: two

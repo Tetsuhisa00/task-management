@@ -1,0 +1,342 @@
+<% content_for :head do %>
+  <%= javascript_import_module_tag "wbs/index" %>
+  <!-- フォントとスタイルのリンクを追加 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Serif+JP:wght@900&display=swap" rel="stylesheet">
+<% end %>
+
+<style>
+  .emergency-sign {
+    background-color: #ffff00; /* 黒：：・色の背景 */
+    /* color: #000; 白色のテキスト */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1500; /* 最前面に表示 */
+    bottom: 0;
+    transform:scaleY(1.5);
+    letter-spacing :-0.05rem;
+  }
+  @keyframes slide {
+    from { background-position: 0% 0; }
+    to { background-position: 100% 0; }
+  }
+  .emergency-sign:before,
+  .emergency-sign:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 25vh; /* ストライプの高さは変わらない vh vw*/
+    background: linear-gradient(
+      -45deg,
+      #000 25%, /* 黒の幅 */
+      #ffff00 25%, /* 赤の始まり */
+      #ffff00 50%, /* 赤の終わり */
+      #000 50%, /* 黒に戻る */
+      #000 75%, /* 2つ目の黒の幅 */
+      #ffff00 75%, /* 2つ目の赤の始まり */
+      #ffff00 100% /* 2つ目の赤の終わり */
+    );
+    animation: slide 10s linear infinite; /* 10秒で完了する無限ループのスライドアニメーション */
+    background-size: 3.5cm 3.5cm; /* ストライプの繰り返しサイズ */
+    z-index: 2500;
+  }
+
+    /* 画像を挿入 */
+  #overlay-image {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5); /* 背景を半透明に */
+    opacity: 0;
+    z-index: 2000; /* emergency-signより前面に */
+    transition: opacity 0.5s ease;
+    pointer-events: none; /* クリックを無視*/
+  }
+
+  #overlay-image img {
+  max-width: 150%; /* 画像の最大幅をコンテナの幅に合わせる */
+  max-height: 105%; /* 画像の最大高さをコンテナの高さに合わせる */
+  object-fit: contain; /* 画像をコンテナに収める（アスペクト比を維持） */
+  }
+
+
+  #overlay-image.visible {
+    opacity: 1;
+  }
+
+  .emergency-sign:before {
+    top: 0;
+  }
+
+  .emergency-sign:after {
+    bottom: 0;
+  }
+
+  /* テキストのスタイル */
+  .text {
+    font-size: 200px;
+    color: black;
+    text-shadow: 2px 2px 4px #000000;
+    animation: blink 1s infinite;
+    font-family:'Noto Serif JP';
+  }
+
+  .text1 {
+    font-size: 15vh;
+  }
+
+  .text2 {
+    font-size: 14vh;
+  }
+
+  .text3 {
+    font-size: 6vh;
+  }
+
+  /* 点滅アニメーション */
+  @keyframes blink {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+
+  /* 他のコンテンツのスタイル */
+  .grid {
+    position: relative;
+    z-index: 1; /* .emergency-signよりも低いz-index */
+  }
+
+  /* ボタンコンテナのスタイル */
+  .wbs-button-container {
+    position: absolute;
+    z-index: 1; /* .emergency-signよりも低いz-index */
+    bottom: 0;
+  }
+
+</style>
+
+<div class="emergency-sign" onclick="hideEmergencyScreen()">
+  <div class="text text1">【警告】</div>
+  <div class="text text2">WARNING</div>
+  <div class="text text3">＊期限が迫っています＊</div>
+</div>
+
+<!-- 新しい画像のdiv -->
+<div id="overlay-image" class="hidden" onclick="hideEmergencyScreen()">
+  <img src="/glass_m.png" alt="Overlay Image" style="max-width:100%;height:auto;">
+</div>
+
+<!-- 警告音のオーディオ要素を追加 -->
+<audio id="alert-sound" preload="auto">
+  <source src="/alert_sound.mp3" type="audio/mpeg">
+</audio>
+
+
+<% content_for :head do%>
+  <%= javascript_import_module_tag "wbs/index" %>
+  <meta name="turbo-visit-control" content="reload">
+  <style>
+    .grid {
+      display: grid;
+      grid-template-rows: 100px 1fr;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .title {
+      text-align: center;
+    }
+
+    .wbs-canvas {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: calc(100vh - 100px);
+      overflow: scroll;
+    }
+
+    .wbs-button-container {
+      position: absolute;
+      z-index: 100;
+      bottom: 0;
+    }
+
+    .wbs-container {
+      display: grid;
+      grid-template-columns: 1fr 0px;
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      transition: grid-template-columns 0.3s;
+    }
+
+    .wbs-container.active {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+    }
+
+    .resize-handle {
+      position: relative;
+      width: 10px;
+      height: 100%;
+      user-select: none;
+    }
+
+    .wbs-editor {
+      display: grid;
+      position: relative;
+      grid-template-columns: 10px 1fr;
+      width: 100%;
+      height: 100%;
+    }
+
+    .wbs-editor>.content {
+      visibility: hidden;
+      position: relative;
+      z-index: 1;
+      overflow: scroll;
+    }
+
+    .wbs-editor>.content.active {
+      visibility: visible;
+    }
+    .wbs-editor>.resize-handle {
+      cursor: col-resize;
+    }
+  </style>
+<% end %>
+<div class="grid">
+  <h1 class="title"><%= @project.title =%></h1>
+  <input type="hidden" id="json_data" value='<%=@json%>'>
+
+  <div id="draw">
+    <div class="wbs-container">
+      <div class="wbs-canvas" id="canvas"></div>
+
+      <div class="wbs-editor">
+        <div class="resize-handle"></div>
+        <div class="content">
+          <h2>タスク編集</h2>
+          <dl>
+            <dt>タスク名</dt>
+            <dd><input type="text" id="title" placeholder="タスク名"></dd>
+            <dt>詳細</dt>
+            <dd><textarea id="description" placeholder="詳細"></textarea></dd>
+            <dt>締め切り日</dt>
+            <dd><input type="date" id="deadline"></dd>
+            <dt>成果物</dt>
+            <dd><input type="text" id="work_output" placeholder="成果物"></dd>
+            <dt>作業状態</dt>
+            <dd>
+              <select id="status">
+                <option value="未着手">未着手</option>
+                <option value="進行中">進行中</option>
+                <option value="完了">完了</option>
+              </select>
+            </dd>
+            <dt>タスク遂行に必要な能力</dt>
+            <div id="tag_container"></div>
+            <dd><button id="add_tag">タグを追加</button></dd>
+            <dt>担当者</dt>
+            <dd><input type="text" id="manager" placeholder="担当者"></dd>
+          </dl>
+          <button id="update">更新</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="wbs-button-container">
+      <button id="task">新規タスクを追加</button>
+
+      <form id="post_json_form" action="/projects/<%=@project_id%>/wbs" method="POST" enctype="multipart/form-data">
+          <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
+          <input type="hidden" id="post_json_data" name="post_json"/>
+          <input type="submit" id="post_json_btn" value="jsonを送信"/>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 音声を停止する関数
+  function stopSound() {
+    var alertSound = document.getElementById('alert-sound');
+    if (alertSound) {
+      alertSound.pause(); // 音声を停止
+      alertSound.currentTime = 0; // 再生位置をリセット
+    }
+  }
+
+  // 非常事態の画面と画像を非表示にする関数
+  function hideEmergencyScreen() {
+    var emergencySign = document.querySelector('.emergency-sign');
+    var overlayImage = document.getElementById('overlay-image');
+    if (emergencySign) {
+      emergencySign.style.display = 'none';
+    }
+    if (overlayImage) {
+      overlayImage.style.display = 'none';
+    }
+    stopSound(); // 音声も停止
+  }
+
+  // 画像を表示する関数
+  function showOverlayImage() {
+    setTimeout(function() {
+      var overlayImage = document.getElementById('overlay-image');
+      if (overlayImage) {
+        overlayImage.classList.remove('hidden');
+        overlayImage.classList.add('visible');
+      }
+    }, 3000); // 3秒後に画像を表示
+  }
+
+  // 非常事態の画面と画像のクリックイベントハンドラ
+  function handleEmergencyContentClick() {
+    hideEmergencyScreen();
+  }
+
+  // ページが読み込まれた時、非常事態の画面を表示し、音声を再生し、画像表示のタイミングを設定する
+  document.addEventListener('DOMContentLoaded', function() {
+    var emergencySign = document.querySelector('.emergency-sign');
+    var alertSound = document.getElementById('alert-sound');
+    if (emergencySign && alertSound) {
+      emergencySign.classList.remove('hidden');
+      emergencySign.classList.add('visible');
+      alertSound.play().catch(error => {
+        console.error('Playback prevented', error);
+      });
+
+      // 非常事態の画面と画像にクリックイベントを設定
+      emergencySign.addEventListener('click', handleEmergencyContentClick);
+      var overlayImage = document.getElementById('overlay-image');
+      if (overlayImage) {
+        overlayImage.addEventListener('click', handleEmergencyContentClick);
+      }
+
+      showOverlayImage();
+    }
+  });
+</script>

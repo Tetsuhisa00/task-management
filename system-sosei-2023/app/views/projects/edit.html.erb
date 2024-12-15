@@ -1,0 +1,104 @@
+<% content_for :head do%>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
+<% end %>
+
+<!-- 右側のボタンとアイコンのコンテナ -->
+<div class="fixed top-0 right-0 p-4 flex items-center space-x-2 bg-white p-2 rounded-lg shadow-md">
+    <!-- HOME Button -->
+    <button class="text-white bg-red-500 hover:bg-red-600 focus:outline-none font-medium text-sm py-2 px-4 rounded items-center" onclick="location.href='/';">
+        <i class="fas fa-home mr-1"></i>
+        <span>HOME</span>
+    </button>
+    
+    <!-- プロジェクト一覧ボタン -->
+    <button
+        class="text-white bg-blue-500 hover:bg-blue-600 focus:outline-none font-medium text-sm py-2 px-4 rounded items-center"
+        onclick="location.href='/projects';">
+        <span>プロジェクト一覧</span>
+    </button>
+
+    <!-- Icon Container -->
+    <div class="relative w-10 h-10 overflow-hidden bg-gray-100 rounded-full shadow-sm" onclick="location.href='<%= user_path(@user) %>';">
+        <svg class="absolute w-12 h-12 text-gray-400 -left-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+        </svg>
+    </div>
+</div>
+<div class="container mx-auto px-4 py-4">
+  <h1 class="text-2xl font-bold text-center my-6">プロジェクト編集</h1>
+</div>
+
+<%= form_with model: @project, local: true, html: {class: "form-container"} do |form| %>
+  <div class="form-input">
+    <%= form.label :title %>
+    <%= form.text_field :title %>
+  </div>
+
+  <div class="form-input">
+    <%= form.label :content %>
+    <%= form.text_area :content %>
+  </div>
+
+   <!-- マネージャーの選択 -->
+    <div class="form-input">
+      <%= form.label :manager_id, 'マネージャー' %>
+      <%= form.collection_select :manager_id, @project_members.uniq, :id, :user_name, include_blank: false %>
+    </div>
+    
+
+
+
+  <!-- 納期 -->
+  <div class="form-input">
+    <%= form.label :deadline, '納期' %>
+    <%= form.datetime_select :deadline %>
+  </div>
+
+    
+     <!-- 納品物 -->
+    <%= form.fields_for :deliverables do |deliverable_form| %>
+        <%= render 'deliverable_fields', f: deliverable_form %>
+    <% end %>
+
+    <div class="form-input">
+        <%= link_to_add_association '納品物を追加', form, :deliverables, partial: 'projects/deliverable_fields', class: 'add_fields' %>
+    </div>
+
+
+  <!-- 開発のInput情報 -->
+  <div class="form-input">
+    <%= form.label :development_input, '開発のInput情報' %>
+    <%= form.text_area :development_input %>
+  </div>
+
+  <!-- 開発環境 -->
+  <div class="form-input">
+    <%= form.label :development_environment, '開発環境' %>
+    <%= form.text_area :development_environment %>
+  </div>
+
+  <!-- 品質の定義 -->
+  <div class="form-input">
+    <%= form.label :quality_definition, '品質の定義' %>
+    <%= form.text_area :quality_definition %>
+  </div>
+
+  <!-- プロジェクトメンバーの選択 -->
+  <div class="form-input">
+    <%= form.label :user_ids, 'プロジェクトメンバー' %>
+    <% User.all.each do |user| %>
+      <div class="flex items-center mb-2">
+        <%= label_tag "user_ids_#{user.id}", user.user_name, class: "w-full ml-10 text-sm text-gray-600" %>
+        <%= form.check_box :user_ids, { multiple: true, id: "user_ids_#{user.id}", class: "w-4 h-4 mr-5" }, user.id, nil %>
+      </div>
+    <% end %>
+  </div>
+
+ 
+
+  <div class="button-container"> 
+    <%= form.submit "更新", class: "link-button" %> 
+  </div>
+<% end %>
